@@ -1,0 +1,8 @@
+install_data('elicit-128.png',
+  install_dir : get_option('datadir') / 'icons' / 'hicolor' / '128x128' / 'apps',
+  rename      : 'elicit.png',
+)
+
+install_data('/usr/share/icons/hicolor/index.theme',
+  install_dir : get_option('datadir') / 'icons' / 'hicolor',
+)

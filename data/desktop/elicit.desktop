@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Elicit
+Comment=EFL Screen Magnifier/Color Picker
+Exec=elicit
+Icon=elicit
+Terminal=false
+Type=Application
+Categories=Graphics
+StartupNotify=true
