@@ -14,7 +14,7 @@ typedef struct _Elicit_Config {
 /* when no config file exists */
 #define ELICIT_DEFAULT_X      0 // unused
 #define ELICIT_DEFAULT_Y      0 // unused
-#define ELICIT_DEFAULT_ZOOM   8
+#define ELICIT_DEFAULT_ZOOM   6
 
 Elicit_Config *elicit_config_load(void);
 

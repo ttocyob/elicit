@@ -179,7 +179,8 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    evas_object_size_hint_padding_set(toggle_label, 0, 0, 0, 0); // padding
    //elm_table_pack(cpicker_table, toggle_label, 0, 0, 1, 1);
    elm_table_pack(cpicker_table, toggle_label, 1, 0, 1, 1); // column 1
-   evas_object_show(toggle_label);
+   //evas_object_hide(toggle_label); // hide the label
+   evas_object_show(toggle_label); // show the label
 
    /* column 2: toggle */
    grid_toggle = elm_check_add(win);
@@ -187,7 +188,8 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    evas_object_size_hint_weight_set(grid_toggle, 0.0, 0.0);
    evas_object_size_hint_align_set(grid_toggle, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_table_pack(cpicker_table, grid_toggle, 2, 0, 1, 1); // column 2
-   evas_object_show(grid_toggle);
+   //evas_object_hide(grid_toggle); // hide the toggle
+   evas_object_show(grid_toggle); // show the toggle
 
    /* column 3: zoom label */
    Evas_Object *zoom_label = elm_label_add(win);
