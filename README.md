@@ -2,7 +2,7 @@
 
 **Elicit** — a Live screen magnifier and color picker, written using the Enlightenment Foundation Libraries. Designed for UI designers and developers.
 
-![Elicit screenshot](https://github.com/user-attachments/assets/c472903f-73b4-4e43-8548-34551402b26e)
+![Elicit screenshot](https://github.com/user-attachments/assets/94a9778c-6f18-40fd-9053-c9645dfe38be)
 
 ---
 
