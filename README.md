@@ -54,4 +54,4 @@ Elicit was originally coined and written by Brian Mattern (rephorm) almost 20+ y
 
 ## License
 
-MIT
+BSD-2-Clause license 
