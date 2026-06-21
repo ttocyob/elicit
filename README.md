@@ -48,7 +48,7 @@ sudo ninja -C build install
 
 ## Acknowledgements
 
-Elicit was originally coined and written by Brian Mattern (rephorm) almost 20+ years ago. It was his means to learn the EFL. He later ported Elicit to [GTK/Python](https://github.com/rephorm/elicit-gtk), which includes a lot of features that this version does not have. The original EFL/Edje version can be found [here](https://github.com/rephorm/elicit).
+Elicit was originally coined and written by Brian Mattern (rephorm) 21+ years ago. It was his means to learn the EFL. He later ported Elicit to [GTK/Python](https://github.com/rephorm/elicit-gtk), which includes a lot of features that this version does not have. The original EFL/Edje version can be found [here](https://github.com/rephorm/elicit).
 
 ---
 
