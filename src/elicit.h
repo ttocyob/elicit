@@ -9,7 +9,7 @@ typedef struct _App_Data {
     Evas_Object *preview;
     Evas_Object *swatch;
     Evas_Object *r_slider, *g_slider, *b_slider;
-    Evas_Object *r_entry,  *g_entry,  *b_entry;
+    Evas_Object *r_entry,  *g_entry,  *b_entry, *cc_entry;
     Evas_Object *hex_entry;
     Evas_Object *zoom_spinner;
     Evas_Object *grid_toggle;

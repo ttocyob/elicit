@@ -10,7 +10,8 @@
 
 - Live X11 screen capture
 - Color picker
-- RGB/Hex based on color output
+- RGB, Hex and Color Class output
+- Hex and RGB entries drive sliders and the color swatch
 - Zoom (1 to 10) factor
 - Stores last used values (zoom level, RGB/Hex values) upon exit
 
@@ -39,8 +40,6 @@ sudo ninja -C build install
 ## Missing Features
 
 - Square grid overlay based on zoom factor (Grid toggle UI is present, not yet implemented)
-- Hex entry manual update (copy/paste)
-- Update the color swatch based on RGB values
 - Save swatch color to a palette directory
 - ELM_SCALE: live scale based on Enlightenment's scale factor
 

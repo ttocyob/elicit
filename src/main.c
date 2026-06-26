@@ -55,7 +55,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    Evas_Object *outer_table, *cpicker_table, *controls_table, *hex_table;
    Evas_Object *color_frame, *frame_box;
    Evas_Object *r_slider, *g_slider, *b_slider;
-   Evas_Object *r_entry, *g_entry, *b_entry, *hex_entry;
+   Evas_Object *r_entry, *g_entry, *b_entry, *hex_entry, *cc_entry;
    Evas_Object *grid_toggle, *zoom_spinner;
 
    win = ad->win;
@@ -249,6 +249,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    r_slider = elm_slider_add(win);
    elm_slider_min_max_set(r_slider, 0, 255); // set the min/max values
    elm_slider_value_set(r_slider, 0); // set default value
+   elm_slider_indicator_show_set(r_slider, EINA_FALSE); // don't display the tooltip by default
    evas_object_size_hint_weight_set(r_slider, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(r_slider, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_padding_set(r_slider, 0, 0, 0, 0);
@@ -257,6 +258,8 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    evas_object_show(r_slider);
 
    r_entry = elm_entry_add(win);
+   evas_object_smart_callback_add(r_entry, "activated", on_r_entry_change, ad); // active
+   evas_object_smart_callback_add(r_entry, "unfocused", on_r_entry_change, ad); // unfocused
    elm_object_part_text_set(r_entry, "guide", "0"); // is the guide really necessary?
    elm_object_text_set(r_entry, "0");
    elm_entry_single_line_set(r_entry, EINA_TRUE);
@@ -282,6 +285,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    g_slider = elm_slider_add(win);
    elm_slider_min_max_set(g_slider, 0, 255); // set the min/max values
    elm_slider_value_set(g_slider, 0); // set default value
+   elm_slider_indicator_show_set(g_slider, EINA_FALSE); // don't display the tooltip by default
    evas_object_size_hint_weight_set(g_slider, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(g_slider, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_padding_set(g_slider, 0, 0, 0, 0);
@@ -290,6 +294,8 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    evas_object_show(g_slider);
 
    g_entry = elm_entry_add(win);
+   evas_object_smart_callback_add(g_entry, "activated", on_g_entry_change, ad); // active
+   evas_object_smart_callback_add(g_entry, "unfocused", on_g_entry_change, ad); // unfocused
    elm_object_part_text_set(g_entry, "guide", "0"); // is the guide really necessary?
    elm_object_text_set(g_entry, "0");
    elm_entry_single_line_set(g_entry, EINA_TRUE);
@@ -316,6 +322,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    b_slider = elm_slider_add(win);
    elm_slider_min_max_set(b_slider, 0, 255); // set the min/max values
    elm_slider_value_set(b_slider, 0); // set default value
+   elm_slider_indicator_show_set(b_slider, EINA_FALSE); // don't display the tooltip by default
    evas_object_size_hint_weight_set(b_slider, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(b_slider, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_padding_set(b_slider, 0, 0, 0, 0);
@@ -324,6 +331,8 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    evas_object_show(b_slider);
 
    b_entry = elm_entry_add(win);
+   evas_object_smart_callback_add(b_entry, "activated", on_b_entry_change, ad); // active
+   evas_object_smart_callback_add(b_entry, "unfocused", on_b_entry_change, ad); // unfocused
    elm_object_part_text_set(b_entry, "guide", "0"); // is the guide really necessary?
    elm_object_text_set(b_entry, "0");
    elm_entry_single_line_set(b_entry, EINA_TRUE);
@@ -354,17 +363,56 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    elm_table_pack(hex_table, hex_label, 0, 0, 1, 1);
    evas_object_show(hex_label);
 
+
+/* hex minimum size control: https://www.enlightenment.org/develop/legacy/samples/elm_min_size_control */
+Evas_Object *hex_rec = evas_object_rectangle_add(evas_object_evas_get(win));
+evas_object_size_hint_weight_set(hex_rec, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+evas_object_size_hint_align_set(hex_rec, EVAS_HINT_FILL, EVAS_HINT_FILL);
+evas_object_size_hint_min_set(hex_rec, ELM_SCALE_SIZE(10), 0);
+elm_table_pack(hex_table, hex_rec, 1, 0, 1, 1); /* same cell as hex_entry */
+/* do not display the rectangle */
+
    hex_entry = elm_entry_add(win);
+   evas_object_smart_callback_add(hex_entry, "activated", on_hex_entry_change, ad); // active
+   evas_object_smart_callback_add(hex_entry, "unfocused", on_hex_entry_change, ad); // unfocused
    // elm_object_part_text_set(hex_entry, "guide", "#hex"); // no need for a guide here due to update_color_widgets callback
    elm_object_text_set(hex_entry, "#000000");
    elm_entry_single_line_set(hex_entry, EINA_TRUE);
    elm_entry_scrollable_set(hex_entry, EINA_TRUE);
-   evas_object_size_hint_weight_set(hex_entry, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_weight_set(hex_entry, 1.4, 0.0);
    evas_object_size_hint_align_set(hex_entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
    //evas_object_size_hint_min_set(hex_entry, 48, 0);
-   evas_object_size_hint_padding_set(hex_entry, 5, 0, 0, 0);
+   //evas_object_size_hint_max_set(hex_entry, 48, 0);
+   evas_object_size_hint_padding_set(hex_entry, 3, 0, 0, 0);
    elm_table_pack(hex_table, hex_entry, 1, 0, 1, 1);
    evas_object_show(hex_entry);
+
+//
+
+   Evas_Object *cc_label = elm_label_add(win);
+   elm_object_text_set(cc_label, "cc");
+   evas_object_size_hint_weight_set(cc_label, 0.0, 0.0);
+   evas_object_size_hint_align_set(cc_label, 0.0, EVAS_HINT_FILL);
+   //evas_object_size_hint_min_set(cc_label, 48, 0);
+   evas_object_size_hint_padding_set(cc_label, 3, 0, 0, 0);
+   elm_table_pack(hex_table, cc_label, 2, 0, 1, 1);
+   evas_object_show(cc_label);
+
+   cc_entry = elm_entry_add(win);
+   //evas_object_smart_callback_add(cc_entry, "activated", on_cc_entry_change, ad); // active
+   //evas_object_smart_callback_add(cc_entry, "unfocused", on_cc_entry_change, ad); // unfocused
+   // elm_object_part_text_set(cc_entry, "guide", "#ffffff #ffffff #ffffff "); // no need for a guide here due to update_color_widgets callback
+   elm_object_text_set(cc_entry, "# # #");
+   elm_entry_single_line_set(cc_entry, EINA_TRUE);
+   elm_entry_scrollable_set(cc_entry, EINA_TRUE);
+   evas_object_size_hint_weight_set(cc_entry, 3.6, 0.0);
+   evas_object_size_hint_align_set(cc_entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   //evas_object_size_hint_min_set(cc_entry, 48, 0);
+   evas_object_size_hint_padding_set(cc_entry, 3, 0, 0, 0);
+   elm_table_pack(hex_table, cc_entry, 3, 0, 1, 1);
+   evas_object_show(cc_entry);
+
+//
 
    /* store the widget pointers into "ad" */
    ad->r_slider     = r_slider;
@@ -376,6 +424,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    ad->hex_entry    = hex_entry;
    ad->zoom_spinner = zoom_spinner;
    ad->grid_toggle  = grid_toggle;
+   ad->cc_entry = cc_entry;
 
    update_color_widgets(ad, cfg->r, cfg->g, cfg->b);
    elm_spinner_value_set(ad->zoom_spinner, cfg->zoom_factor);
@@ -387,7 +436,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 
   // evas_object_move(ad->win, cfg->x, cfg->y);
 //fprintf(stderr, "MOVE: moved to cfg->x=%d cfg->y=%d\n", cfg->x, cfg->y);
-   //evas_object_resize(ad->win, 200, 400); this line is redundant???
+   evas_object_resize(ad->win, 212, 403); // this line is redundant???
 
    evas_object_show(ad->win);
 
