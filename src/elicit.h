@@ -6,8 +6,11 @@
 
 typedef struct _App_Data {
     Evas_Object *win;
+    Evas_Object *outer_table;
     Evas_Object *preview;
+    Evas_Object *preview_shadow;
     Evas_Object *swatch;
+    Evas_Object *cpicker_mask;
     Evas_Object *r_slider, *g_slider, *b_slider;
     Evas_Object *r_entry,  *g_entry,  *b_entry, *cc_entry;
     Evas_Object *hex_entry;

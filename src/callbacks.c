@@ -222,4 +222,8 @@ on_preview_resize(void *data, Evas *e, Evas_Object *obj, void *event_info)
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
    if (w <= 0 || h <= 0) return;
    evas_object_image_fill_set(obj, 0, 0, w, h);
+
+   int iw, ih;
+   evas_object_image_size_get(obj, &iw, &ih);
+   fprintf(stderr, "[PREVIEW_RESIZE] geom=%dx%d image_size=%dx%d\n", w, h, iw, ih);
 }

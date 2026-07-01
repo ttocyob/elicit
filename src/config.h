@@ -5,7 +5,7 @@
 
 /* app state stored to ~/.config/elicit/elicit.eet */
 typedef struct _Elicit_Config {
-    //int  x, y;        
+    //int  x, y;      // unused  
     int  r, g, b;     // rgb values
     int  zoom_factor; // spinner value
 

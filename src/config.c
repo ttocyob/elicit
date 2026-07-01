@@ -20,8 +20,8 @@ _edd_init(void)
     EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Elicit_Config);
     _edd = eet_data_descriptor_stream_new(&eddc);
 
-    //EET_DATA_DESCRIPTOR_ADD_BASIC(_edd, Elicit_Config, "x", x, EET_T_INT);
-    //EET_DATA_DESCRIPTOR_ADD_BASIC(_edd, Elicit_Config, "y", y, EET_T_INT);
+    //EET_DATA_DESCRIPTOR_ADD_BASIC(_edd, Elicit_Config, "x", x, EET_T_INT); // unused
+    //EET_DATA_DESCRIPTOR_ADD_BASIC(_edd, Elicit_Config, "y", y, EET_T_INT); // unused
     EET_DATA_DESCRIPTOR_ADD_BASIC(_edd, Elicit_Config, "r", r, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_edd, Elicit_Config, "g", g, EET_T_INT);
     EET_DATA_DESCRIPTOR_ADD_BASIC(_edd, Elicit_Config, "b", b, EET_T_INT);
@@ -40,9 +40,9 @@ _elicit_config_path(void)
     int n;
 
     if (xdg && xdg[0])
-        n = asprintf(&path, "%s/elicit/elicit_state.eet", xdg);
+        n = asprintf(&path, "%s/elicit/elicit.eet", xdg);
     else
-        n = asprintf(&path, "%s/.config/elicit/elicit_state.eet", home);
+        n = asprintf(&path, "%s/.config/elicit/elicit.eet", home);
 
     if (n < 0) return NULL; 
 

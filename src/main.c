@@ -37,6 +37,36 @@ win_delete_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UN
    elm_exit();
 }
 
+static Eina_Bool
+_config_changed_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
+{
+    static double last_scale = 0.0;
+    App_Data *ad = data;
+
+    double scale = elm_config_scale_get();
+    if (scale < 1.0 || scale > 2.0) scale = 1.0;
+    if (scale == last_scale) return ECORE_CALLBACK_PASS_ON;
+    last_scale = scale;
+
+    evas_object_size_hint_min_set(ad->preview,
+                                  ELM_SCALE_SIZE(200), ELM_SCALE_SIZE(200));
+    evas_object_size_hint_min_set(ad->preview_shadow,
+                                  ELM_SCALE_SIZE(200), ELM_SCALE_SIZE(200));
+    evas_object_image_fill_set(ad->preview_shadow,
+                               0, 0, ELM_SCALE_SIZE(200), ELM_SCALE_SIZE(200));
+
+    evas_object_size_hint_min_set(ad->swatch,
+                                  ELM_SCALE_SIZE(20), ELM_SCALE_SIZE(20));
+    evas_object_size_hint_min_set(ad->cpicker_mask,
+                                  ELM_SCALE_SIZE(20), ELM_SCALE_SIZE(20));
+    evas_object_image_fill_set(ad->cpicker_mask,
+                               0, 0, ELM_SCALE_SIZE(20), ELM_SCALE_SIZE(20));
+
+    evas_object_resize(ad->win, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(403));
+
+    return ECORE_CALLBACK_PASS_ON;
+}
+
 EAPI_MAIN int
 elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 {
@@ -89,7 +119,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
         evas_object_image_data_update_add(preview, 0, 0, init_w, init_h);
      }
 
-   evas_object_size_hint_min_set(preview, 200, 200);
+   evas_object_size_hint_min_set(preview, ELM_SCALE_SIZE(200), ELM_SCALE_SIZE(200));
    evas_object_size_hint_weight_set(preview, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_table_pack(outer_table, preview, 0, 0, 1, 1);
@@ -114,18 +144,18 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 
    evas_object_image_border_set(preview_shadow, 1, 1, 0, 6);
    evas_object_image_border_scale_set(preview_shadow, 1.0);
-   evas_object_image_fill_set(preview_shadow, 0, 0, 200, 200);
+   evas_object_image_fill_set(preview_shadow, 0, 0, ELM_SCALE_SIZE(200), ELM_SCALE_SIZE(200));
    
    // match the size hints and alignment of *swatch including same cell
-   evas_object_size_hint_min_set(preview_shadow, 200, 200);
+   evas_object_size_hint_min_set(preview_shadow, ELM_SCALE_SIZE(200), ELM_SCALE_SIZE(200));
    evas_object_size_hint_weight_set(preview_shadow, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(preview_shadow, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_table_pack(outer_table, preview_shadow, 0, 0, 1, 1);
    evas_object_event_callback_add(preview_shadow, EVAS_CALLBACK_RESIZE, on_preview_resize, ad); // resize
    
-   // place the overlay image over *swatch
-   evas_object_raise(preview_shadow); 
+   evas_object_raise(preview_shadow); // raise the image 
    evas_object_show(preview_shadow);
+   ad->preview_shadow = preview_shadow;
 
 //
 
@@ -141,7 +171,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    /* column 0: color swatch */
    Evas_Object *swatch = evas_object_rectangle_add(evas_object_evas_get(win));
    evas_object_color_set(swatch, 0, 0, 0, 255);
-   evas_object_size_hint_min_set(swatch, 20, 20);
+   evas_object_size_hint_min_set(swatch, ELM_SCALE_SIZE(20), ELM_SCALE_SIZE(20));
    evas_object_size_hint_weight_set(swatch, 0.0, 0.0);
    evas_object_size_hint_align_set(swatch, 0.0, 0.5); // (swatch, 0.0, 0.5) don't stretch me vertically
    elm_table_pack(cpicker_table, swatch, 0, 0, 1, 1);
@@ -158,10 +188,10 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    evas_object_image_file_set(cpicker_mask, "/home/boycott/git/elicit/data/images/cpicker_mask.png", NULL); 
    evas_object_image_border_set(cpicker_mask, 4, 4, 4, 4);
    evas_object_image_border_scale_set(cpicker_mask, 1.0);
-   evas_object_image_fill_set(cpicker_mask, 0, 0, 20, 20);
+   evas_object_image_fill_set(cpicker_mask, 0, 0, ELM_SCALE_SIZE(20), ELM_SCALE_SIZE(20));
    
    // match the size hints and alignment of *swatch including same cell
-   evas_object_size_hint_min_set(cpicker_mask, 20, 20);
+   evas_object_size_hint_min_set(cpicker_mask, ELM_SCALE_SIZE(20), ELM_SCALE_SIZE(20));
    evas_object_size_hint_weight_set(cpicker_mask, 0.0, 0.0);
    evas_object_size_hint_align_set(cpicker_mask, 0.0, 0.5);
    elm_table_pack(cpicker_table, cpicker_mask, 0, 0, 1, 1);
@@ -169,6 +199,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    // place the overlay image over *swatch
    evas_object_raise(cpicker_mask); 
    evas_object_show(cpicker_mask);
+   ad->cpicker_mask   = cpicker_mask;
 
    /* column 1: toggle label */
    Evas_Object *toggle_label = elm_label_add(win);
@@ -363,7 +394,6 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    elm_table_pack(hex_table, hex_label, 0, 0, 1, 1);
    evas_object_show(hex_label);
 
-
 /* hex minimum size control: https://www.enlightenment.org/develop/legacy/samples/elm_min_size_control */
 Evas_Object *hex_rec = evas_object_rectangle_add(evas_object_evas_get(win));
 evas_object_size_hint_weight_set(hex_rec, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -424,7 +454,7 @@ elm_table_pack(hex_table, hex_rec, 1, 0, 1, 1); /* same cell as hex_entry */
    ad->hex_entry    = hex_entry;
    ad->zoom_spinner = zoom_spinner;
    ad->grid_toggle  = grid_toggle;
-   ad->cc_entry = cc_entry;
+   ad->cc_entry     = cc_entry;
 
    update_color_widgets(ad, cfg->r, cfg->g, cfg->b);
    elm_spinner_value_set(ad->zoom_spinner, cfg->zoom_factor);
@@ -436,13 +466,15 @@ elm_table_pack(hex_table, hex_rec, 1, 0, 1, 1); /* same cell as hex_entry */
 
   // evas_object_move(ad->win, cfg->x, cfg->y);
 //fprintf(stderr, "MOVE: moved to cfg->x=%d cfg->y=%d\n", cfg->x, cfg->y);
-   evas_object_resize(ad->win, 212, 403); // this line is redundant???
+   evas_object_resize(ad->win, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(403));
 
    evas_object_show(ad->win);
 
 //int show_x, show_y;
 //evas_object_geometry_get(ad->win, &show_x, &show_y, NULL, NULL);
 //fprintf(stderr, "SHOW: geometry now x=%d y=%d\n", show_x, show_y);
+
+   ecore_event_handler_add(ELM_EVENT_CONFIG_ALL_CHANGED, _config_changed_cb, ad);
 
    elm_run();
 
