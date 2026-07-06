@@ -17,6 +17,11 @@ dir_prefix = get_option('prefix')
 dir_bin    = join_paths(dir_prefix, get_option('bindir'))
 dir_data   = join_paths(dir_prefix, get_option('datadir'))
 
+add_project_arguments(
+  '-DELICIT_DATADIR="' + join_paths(dir_data, 'elicit') + '"',
+  language : 'c'
+)
+
 edje_cc = find_program('edje_cc', required : true)
 
 subdir('src')

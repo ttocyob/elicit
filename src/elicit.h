@@ -18,7 +18,7 @@ typedef struct _App_Data {
     Evas_Object *grid_toggle;
     Display     *xdisplay;
     int          zoom;
-    int          win_x, win_y;   
+    //int          win_x, win_y;   
     Ecore_Timer *capture_timer;
     Eina_Bool updating;
     Eina_Bool frozen; // weird struct name
