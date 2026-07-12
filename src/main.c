@@ -50,7 +50,7 @@ _config_changed_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
     evas_object_size_hint_min_set(ad->preview,
                                   ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200));
     evas_object_size_hint_min_set(ad->preview_shadow,
-                                  ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200));
+                                  ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200)); // re-enabled 
     evas_object_image_fill_set(ad->preview_shadow,
                                0, 0, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200));
 
@@ -61,25 +61,20 @@ _config_changed_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
     evas_object_image_fill_set(ad->cpicker_mask,
                                0, 0, ELM_SCALE_SIZE(20), ELM_SCALE_SIZE(20));
 
-    /* --- instrumentation --- */
-    Evas_Coord ph_min_w, ph_min_h;
-    evas_object_size_hint_min_get(ad->preview, &ph_min_w, &ph_min_h);
-    fprintf(stderr, "[SCALE_CB] scale=%.2f preview min_hint=%dx%d\n",
-            scale, ph_min_w, ph_min_h);
-    /* --- end instrumentation --- */
 
-    evas_object_resize(ad->win, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(403));
     evas_smart_objects_calculate(evas_object_evas_get(ad->win));
 
-    /* --- instrumentation: after --- */
-    Evas_Coord ww, wh;
-    evas_object_geometry_get(ad->win, NULL, NULL, &ww, &wh);
-    fprintf(stderr, "[SCALE_CB] win geometry AFTER resize call=%dx%d\n", ww, wh);
+    //evas_object_resize(ad->win, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(403));
+    //evas_object_resize(ad->win, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(416));
 
-    Evas_Coord pw, ph;
-    evas_object_geometry_get(ad->preview, NULL, NULL, &pw, &ph);
-    fprintf(stderr, "[SCALE_CB] preview geometry AFTER win resize=%dx%d\n", pw, ph);
-    /* --- end instrumentation --- */
+Evas_Coord min_w, min_h;
+evas_object_size_hint_min_get(ad->outer_table, &min_w, &min_h);
+evas_object_resize(ad->win, min_w, min_h);
+fprintf(stderr, "[SCALE_RESIZE] scale=%.2f min_w=%d min_h=%d\n", scale, (int)min_w, (int)min_h);
+
+Evas_Coord ww, wh, pw, ph;
+evas_object_geometry_get(ad->win, NULL, NULL, &ww, &wh);
+evas_object_geometry_get(ad->preview, NULL, NULL, &pw, &ph);
 
     return ECORE_CALLBACK_PASS_ON;
 }
@@ -113,8 +108,9 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 
    /* table: row 0 = preview, row 2 = cpicker, row 3 = controls, row 4 = hex */
    outer_table = elm_table_add(win);
+ad->outer_table = outer_table;
    elm_table_padding_set(outer_table, 0, 5); // increase padding between outer and cpicker table
-   evas_object_size_hint_weight_set(outer_table, EVAS_HINT_EXPAND, 0.0); // debug
+evas_object_size_hint_weight_set(outer_table, EVAS_HINT_EXPAND, 0.0); // debug
    evas_object_size_hint_weight_set(outer_table, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win, outer_table);
    evas_object_show(outer_table);
@@ -139,7 +135,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 
    evas_object_size_hint_min_set(preview, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200));
    //evas_object_size_hint_weight_set(preview, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-evas_object_size_hint_weight_set(preview, EVAS_HINT_EXPAND, 0.0);
+//evas_object_size_hint_weight_set(preview, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_table_pack(outer_table, preview, 0, 0, 1, 1);
    evas_object_show(preview);
@@ -169,7 +165,7 @@ evas_object_size_hint_weight_set(preview, EVAS_HINT_EXPAND, 0.0);
    // match the size hints and alignment of *swatch including same cell
    evas_object_size_hint_min_set(preview_shadow, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200));
    //evas_object_size_hint_weight_set(preview_shadow, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-evas_object_size_hint_weight_set(preview_shadow, EVAS_HINT_EXPAND, 0.0); // debug
+//evas_object_size_hint_weight_set(preview_shadow, EVAS_HINT_EXPAND, 0.0); // debug
    evas_object_size_hint_align_set(preview_shadow, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_table_pack(outer_table, preview_shadow, 0, 0, 1, 1);
    evas_object_event_callback_add(preview_shadow, EVAS_CALLBACK_RESIZE, on_preview_resize, ad); // resize
@@ -274,7 +270,7 @@ evas_object_size_hint_weight_set(preview_shadow, EVAS_HINT_EXPAND, 0.0); // debu
 
    /* elm_box inside elm_frame */
    frame_box = elm_box_add(win);
-   elm_box_padding_set(frame_box, 0, -3); // reduce the spacing between the tables (neg values)
+   //elm_box_padding_set(frame_box, 0, -3); // reduce the spacing between the tables (neg values)
    elm_box_horizontal_set(frame_box, EINA_FALSE);
    evas_object_size_hint_weight_set(frame_box, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(frame_box, EVAS_HINT_FILL, 0.0);
@@ -283,7 +279,7 @@ evas_object_size_hint_weight_set(preview_shadow, EVAS_HINT_EXPAND, 0.0); // debu
 
    /* table 2: controls table */
    controls_table = elm_table_add(win);
-   elm_table_padding_set(controls_table, 0, -5); // reduce spacing between the rows (neg values)
+   //elm_table_padding_set(controls_table, 0, -5); // reduce spacing between the rows (neg values)
    evas_object_size_hint_weight_set(controls_table, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(controls_table, EVAS_HINT_FILL, 0.0);
    elm_box_pack_end(frame_box, controls_table);
@@ -488,7 +484,14 @@ elm_table_pack(hex_table, hex_rec, 1, 0, 1, 1); /* same cell as hex_entry */
 
   // evas_object_move(ad->win, cfg->x, cfg->y);
 //fprintf(stderr, "MOVE: moved to cfg->x=%d cfg->y=%d\n", cfg->x, cfg->y);
-   evas_object_resize(ad->win, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(403));
+   //evas_object_resize(ad->win, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(416));
+
+evas_smart_objects_calculate(evas_object_evas_get(ad->win));
+Evas_Coord min_w, min_h;
+evas_object_size_hint_min_get(ad->outer_table, &min_w, &min_h);
+evas_object_resize(ad->win, min_w, min_h);
+fprintf(stderr, "[INIT_RESIZE] min_w=%d min_h=%d\n", (int)min_w, (int)min_h);
+
 
    evas_object_show(ad->win);
 

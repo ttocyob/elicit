@@ -75,7 +75,6 @@ update_capture(void *data)
    XImage *img = XGetImage(dpy, root_win, x, y, raw_w, raw_h, AllPlanes, ZPixmap);
    if (!img) return ECORE_CALLBACK_RENEW;
 
-   /* native size, fill rect, and live geometry all match exactly -- no tiling, no Evas-level rescale */
    evas_object_image_size_set(ad->preview, box_w, box_h);
    evas_object_image_fill_set(ad->preview, 0, 0, box_w, box_h);
 
