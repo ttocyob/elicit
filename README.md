@@ -41,7 +41,6 @@ sudo ninja -C build install
 
 - Square grid overlay based on zoom factor (Grid toggle UI is present, not yet implemented)
 - Save swatch color to a palette directory
-- ELM_SCALE: live scale based on Enlightenment's scale factor
 
 ---
 
