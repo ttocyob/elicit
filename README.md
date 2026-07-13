@@ -39,7 +39,6 @@ sudo ninja -C build install
 
 ## Missing Features
 
-- Square grid overlay based on zoom factor (Grid toggle UI is present, not yet implemented)
 - Save swatch color to a palette directory
 
 ---
