@@ -51,6 +51,11 @@ _config_changed_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
                                   ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200));
     evas_object_size_hint_min_set(ad->preview_shadow,
                                   ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200)); // re-enabled 
+
+evas_object_image_border_scale_set(ad->grid_overlay, scale);
+    evas_object_size_hint_min_set(ad->grid_overlay,
+                                  ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200));
+
     evas_object_image_fill_set(ad->preview_shadow,
                                0, 0, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200));
 
@@ -151,6 +156,28 @@ evas_object_size_hint_weight_set(outer_table, EVAS_HINT_EXPAND, 0.0); // debug
    evas_object_event_callback_add(preview, EVAS_CALLBACK_MOUSE_UP, on_mouse_up, ad); // mouse up
    evas_object_event_callback_add(preview, EVAS_CALLBACK_RESIZE, on_preview_resize, ad); // resize
 
+// we's grid 
+
+Evas_Object *grid_overlay;
+grid_overlay = evas_object_image_add(evas_object_evas_get(win));
+char grid_path[PATH_MAX];
+snprintf(grid_path, sizeof(grid_path), ELICIT_DATADIR "/images/grid.png");
+evas_object_image_file_set(grid_overlay, grid_path, NULL);
+evas_object_image_border_set(grid_overlay, 1, 1, 1, 1);
+evas_object_image_border_scale_set(grid_overlay, elm_config_scale_get()); // needs live updates, see below
+evas_object_image_smooth_scale_set(grid_overlay, EINA_FALSE); // FALSE?
+evas_object_pass_events_set(grid_overlay, EINA_TRUE);
+evas_object_color_set(grid_overlay, 92, 92, 92, 92); // opacity
+
+elm_table_pack(outer_table, grid_overlay, 0, 0, 1, 1);
+evas_object_raise(grid_overlay);
+evas_object_hide(grid_overlay); // hidden by default shown only when zoom is 2 + toggle is on
+
+ad->grid_overlay = grid_overlay;
+
+//
+
+
 //
 
    /* dropshadow */
@@ -244,6 +271,8 @@ evas_object_size_hint_weight_set(outer_table, EVAS_HINT_EXPAND, 0.0); // debug
    evas_object_size_hint_weight_set(grid_toggle, 0.0, 0.0);
    evas_object_size_hint_align_set(grid_toggle, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_table_pack(cpicker_table, grid_toggle, 2, 0, 1, 1); // column 2
+ad->grid_toggle = grid_toggle;
+evas_object_smart_callback_add(ad->grid_toggle, "changed", on_grid_toggle_change, ad);
    //evas_object_hide(grid_toggle); // hide the toggle
    evas_object_show(grid_toggle); // show the toggle
 

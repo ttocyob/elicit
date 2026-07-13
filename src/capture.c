@@ -112,5 +112,23 @@ update_capture(void *data)
    evas_object_image_data_update_add(ad->preview, 0, 0, box_w, box_h);
 
    XDestroyImage(img);
+
+//
+
+   /* grid overlay is only useful on a zoom factor above 4 */
+   if (ad->grid_toggle && elm_check_state_get(ad->grid_toggle) && zoom >= 5)
+     {
+        Evas_Coord cell = ELM_SCALE_SIZE(zoom);
+        evas_object_image_fill_set(ad->grid_overlay, 0, 0, cell, cell);
+        evas_object_resize(ad->grid_overlay, box_w, box_h);
+        evas_object_show(ad->grid_overlay);
+     }
+   else
+     {
+        _grid_overlay_refresh(ad);
+     }
+
+//
+
    return ECORE_CALLBACK_RENEW;
 }
