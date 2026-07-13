@@ -91,7 +91,14 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    App_Data *ad = calloc(1, sizeof(App_Data));
    if (!ad) return -1;
 
-   ad->win = elm_win_util_standard_add("elicit_elm", "Elicit");
+   //ad->win = elm_win_util_standard_add("elicit_elm", "Elicit");
+ad->win = elm_win_add(NULL, "elicit_elm", ELM_WIN_DIALOG_BASIC);
+elm_win_title_set(ad->win, "Elicit");
+
+Evas_Object *bg = elm_bg_add(ad->win);
+evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+elm_win_resize_object_add(ad->win, bg);
+evas_object_show(bg);
 
    Evas_Object *win;
    Evas_Object *outer_table, *cpicker_table, *controls_table, *hex_table;
@@ -487,8 +494,10 @@ elm_table_pack(hex_table, hex_rec, 1, 0, 1, 1); /* same cell as hex_entry */
    //evas_object_resize(ad->win, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(416));
 
 evas_smart_objects_calculate(evas_object_evas_get(ad->win));
+
 Evas_Coord min_w, min_h;
 evas_object_size_hint_min_get(ad->outer_table, &min_w, &min_h);
+evas_object_size_hint_max_set(ad->win, min_w, min_h);
 evas_object_resize(ad->win, min_w, min_h);
 fprintf(stderr, "[INIT_RESIZE] min_w=%d min_h=%d\n", (int)min_w, (int)min_h);
 
