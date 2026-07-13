@@ -10,6 +10,7 @@
 
 - Live X11 screen capture
 - Color picker
+- Overlay grid 
 - RGB, Hex and Color Class output
 - Hex and RGB entries drive sliders and the color swatch
 - Zoom (1 to 10) factor
