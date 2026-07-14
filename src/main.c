@@ -52,9 +52,10 @@ _config_changed_cb(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
     evas_object_size_hint_min_set(ad->preview_shadow,
                                   ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200)); // re-enabled 
 
-evas_object_image_border_scale_set(ad->grid_overlay, scale);
+evas_object_image_border_scale_set(ad->grid_overlay, 1.0);
     evas_object_size_hint_min_set(ad->grid_overlay,
                                   ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200));
+_grid_overlay_refresh(ad);;
 
     evas_object_image_fill_set(ad->preview_shadow,
                                0, 0, ELM_SCALE_SIZE(212), ELM_SCALE_SIZE(200));
@@ -164,14 +165,14 @@ char grid_path[PATH_MAX];
 snprintf(grid_path, sizeof(grid_path), ELICIT_DATADIR "/images/grid.png");
 evas_object_image_file_set(grid_overlay, grid_path, NULL);
 evas_object_image_border_set(grid_overlay, 1, 1, 1, 1);
-evas_object_image_border_scale_set(grid_overlay, elm_config_scale_get()); // needs live updates, see below
+evas_object_image_border_scale_set(grid_overlay, 1.0);
 evas_object_image_smooth_scale_set(grid_overlay, EINA_FALSE); // FALSE?
 evas_object_pass_events_set(grid_overlay, EINA_TRUE);
 evas_object_color_set(grid_overlay, 92, 92, 92, 92); // opacity
 
 elm_table_pack(outer_table, grid_overlay, 0, 0, 1, 1);
 evas_object_raise(grid_overlay);
-evas_object_hide(grid_overlay); // hidden by default shown only when zoom is 2 + toggle is on
+evas_object_hide(grid_overlay); // hidden by default shown only when zoom is 5 + toggle is on
 
 ad->grid_overlay = grid_overlay;
 
@@ -288,7 +289,7 @@ evas_object_smart_callback_add(ad->grid_toggle, "changed", on_grid_toggle_change
 
    /* column 4: spinner */
    zoom_spinner = elm_spinner_add(win);
-   elm_spinner_min_max_set(zoom_spinner, 1, 10); // 16 is too high
+   elm_spinner_min_max_set(zoom_spinner, 1, 12); // 16 is too high
    evas_object_size_hint_weight_set(zoom_spinner, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(zoom_spinner, EVAS_HINT_FILL, EVAS_HINT_FILL); // EVAS_HINT_FILL, 0.5
    elm_table_pack(cpicker_table, zoom_spinner, 4, 0, 1, 1); // column 4
@@ -513,6 +514,8 @@ elm_table_pack(hex_table, hex_rec, 1, 0, 1, 1); /* same cell as hex_entry */
    update_color_widgets(ad, cfg->r, cfg->g, cfg->b);
    elm_spinner_value_set(ad->zoom_spinner, cfg->zoom_factor);
    ad->zoom = cfg->zoom_factor;
+
+ _grid_toggle_sync(ad);
    //ad->win_x = cfg->x;
    //ad->win_y = cfg->y;
 

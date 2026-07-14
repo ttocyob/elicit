@@ -13,7 +13,7 @@
 - Overlay grid 
 - RGB, Hex and Color Class output
 - Hex and RGB entries drive sliders and the color swatch
-- Zoom (1 to 10) factor
+- Zoom (1 to 12) factor
 - Stores last used values (zoom level, RGB/Hex values) upon exit
 
 ---

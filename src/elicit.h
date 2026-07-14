@@ -21,8 +21,8 @@ typedef struct _App_Data {
     int          zoom;
     //int          win_x, win_y;   
     Ecore_Timer *capture_timer;
-    Eina_Bool updating;
-    Eina_Bool frozen; // weird struct name
+    Eina_Bool   updating;
+    Eina_Bool   frozen; // weird struct name
 } App_Data;
 
 #endif

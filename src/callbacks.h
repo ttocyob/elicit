@@ -25,6 +25,9 @@ void update_color_widgets(App_Data *ad, int r, int g, int b);
 /* spinner callback */
 void on_zoom_change(void *data, Evas_Object *obj, void *event_info);
 
+void _grid_overlay_refresh(App_Data *ad);
+void _grid_toggle_sync(App_Data *ad);
+
 /* color picker */
 void on_swatch_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void on_swatch_up(void *data, Evas *e, Evas_Object *obj, void *event_info);

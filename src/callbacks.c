@@ -158,6 +158,13 @@ void on_zoom_change(void *data, Evas_Object *obj, void *event_info)
    App_Data *ad = data;
    ad->zoom = (int)elm_spinner_value_get(obj);
 
+_grid_toggle_sync(ad);
+if (ad->zoom < 5) _grid_overlay_refresh(ad);
+}
+
+void
+_grid_toggle_sync(App_Data *ad)
+{
    if (ad->zoom < 5)
      {
         elm_check_state_set(ad->grid_toggle, EINA_FALSE);
@@ -169,19 +176,17 @@ void on_zoom_change(void *data, Evas_Object *obj, void *event_info)
      }
 }
 
-/* shared by the grid toggle and update_capture() -- shows/hides/sizes
- * the grid overlay based on toggle state + zoom, independent of whether
- * a capture is currently running */
 void
 _grid_overlay_refresh(App_Data *ad)
 {
-   Evas_Coord box_w, box_h;
-   evas_object_geometry_get(ad->preview, NULL, NULL, &box_w, &box_h);
-
+   Evas_Coord box_x, box_y, box_w, box_h;
+   evas_object_geometry_get(ad->preview, &box_x, &box_y, &box_w, &box_h);
    if (elm_check_state_get(ad->grid_toggle) && ad->zoom >= 5 && box_w > 0 && box_h > 0)
      {
-        Evas_Coord cell = ELM_SCALE_SIZE(ad->zoom);
+        //Evas_Coord cell = ELM_SCALE_SIZE(ad->zoom); // doubles the size of the grid 
+        Evas_Coord cell = ad->zoom;;
         evas_object_image_fill_set(ad->grid_overlay, 0, 0, cell, cell);
+        evas_object_move(ad->grid_overlay, box_x, box_y);
         evas_object_resize(ad->grid_overlay, box_w, box_h);
         evas_object_show(ad->grid_overlay);
      }
