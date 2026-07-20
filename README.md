@@ -6,7 +6,7 @@
 
 ---
 
-## Current Features
+## Features
 
 - Live X11 screen capture
 - Color picker
