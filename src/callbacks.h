@@ -20,7 +20,7 @@ void on_b_entry_change(void *data, Evas_Object *obj, void *event_info);
 void on_hex_entry_change(void *data, Evas_Object *obj, void *event_info);
 
 /* rgb/hex value updates callback */
-void update_color_widgets(App_Data *ad, int r, int g, int b);
+void update_color_widgets(App_Data *ad, int r, int g, int b, Evas_Object *source);
 
 /* spinner callback */
 void on_zoom_change(void *data, Evas_Object *obj, void *event_info);

@@ -178,9 +178,6 @@ ad->grid_overlay = grid_overlay;
 
 //
 
-
-//
-
    /* dropshadow */
    Evas_Object *preview_shadow = evas_object_image_add(evas_object_evas_get(win)); // 
    /* make sure the dropshadow image does not capture mouse events */
@@ -346,8 +343,8 @@ evas_object_smart_callback_add(ad->grid_toggle, "changed", on_grid_toggle_change
    r_entry = elm_entry_add(win);
    evas_object_smart_callback_add(r_entry, "activated", on_r_entry_change, ad); // active
    evas_object_smart_callback_add(r_entry, "unfocused", on_r_entry_change, ad); // unfocused
-   elm_object_part_text_set(r_entry, "guide", "0"); // is the guide really necessary?
-   elm_object_text_set(r_entry, "0");
+   //elm_object_part_text_set(r_entry, "guide", "0"); // is the guide really necessary?
+   //elm_object_text_set(r_entry, "0");
    elm_entry_single_line_set(r_entry, EINA_TRUE);
    elm_entry_scrollable_set(r_entry, EINA_TRUE);
    evas_object_size_hint_weight_set(r_entry, EVAS_HINT_EXPAND, 0.0);
@@ -382,8 +379,8 @@ evas_object_smart_callback_add(ad->grid_toggle, "changed", on_grid_toggle_change
    g_entry = elm_entry_add(win);
    evas_object_smart_callback_add(g_entry, "activated", on_g_entry_change, ad); // active
    evas_object_smart_callback_add(g_entry, "unfocused", on_g_entry_change, ad); // unfocused
-   elm_object_part_text_set(g_entry, "guide", "0"); // is the guide really necessary?
-   elm_object_text_set(g_entry, "0");
+   //elm_object_part_text_set(g_entry, "guide", "0"); // is the guide really necessary?
+   //elm_object_text_set(g_entry, "0");
    elm_entry_single_line_set(g_entry, EINA_TRUE);
    elm_entry_scrollable_set(g_entry, EINA_TRUE);
    evas_object_size_hint_weight_set(g_entry, EVAS_HINT_EXPAND, 0.0);
@@ -419,8 +416,8 @@ evas_object_smart_callback_add(ad->grid_toggle, "changed", on_grid_toggle_change
    b_entry = elm_entry_add(win);
    evas_object_smart_callback_add(b_entry, "activated", on_b_entry_change, ad); // active
    evas_object_smart_callback_add(b_entry, "unfocused", on_b_entry_change, ad); // unfocused
-   elm_object_part_text_set(b_entry, "guide", "0"); // is the guide really necessary?
-   elm_object_text_set(b_entry, "0");
+   //elm_object_part_text_set(b_entry, "guide", "0"); // is the guide really necessary?
+   //elm_object_text_set(b_entry, "0");
    elm_entry_single_line_set(b_entry, EINA_TRUE);
    elm_entry_scrollable_set(b_entry, EINA_TRUE);
    evas_object_size_hint_weight_set(b_entry, EVAS_HINT_EXPAND, 0.0);
@@ -461,6 +458,7 @@ elm_table_pack(hex_table, hex_rec, 1, 0, 1, 1); /* same cell as hex_entry */
    evas_object_smart_callback_add(hex_entry, "activated", on_hex_entry_change, ad); // active
    evas_object_smart_callback_add(hex_entry, "unfocused", on_hex_entry_change, ad); // unfocused
    // elm_object_part_text_set(hex_entry, "guide", "#hex"); // no need for a guide here due to update_color_widgets callback
+evas_object_smart_callback_add(hex_entry, "changed,user", on_hex_entry_change, ad); // smart callback change
    elm_object_text_set(hex_entry, "#000000");
    elm_entry_single_line_set(hex_entry, EINA_TRUE);
    elm_entry_scrollable_set(hex_entry, EINA_TRUE);
@@ -511,7 +509,7 @@ elm_table_pack(hex_table, hex_rec, 1, 0, 1, 1); /* same cell as hex_entry */
    ad->grid_toggle  = grid_toggle;
    ad->cc_entry     = cc_entry;
 
-   update_color_widgets(ad, cfg->r, cfg->g, cfg->b);
+   update_color_widgets(ad, cfg->r, cfg->g, cfg->b, NULL);
    elm_spinner_value_set(ad->zoom_spinner, cfg->zoom_factor);
    ad->zoom = cfg->zoom_factor;
 

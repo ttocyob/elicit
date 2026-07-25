@@ -106,7 +106,8 @@ update_capture(void *data)
    update_color_widgets(ad,
                         (centre >> 16) & 0xff,
                         (centre >>  8) & 0xff,
-                        (centre      ) & 0xff);
+                        (centre      ) & 0xff,
+                        NULL);
 
    evas_object_image_data_set(ad->preview, pixels);
    evas_object_image_data_update_add(ad->preview, 0, 0, box_w, box_h);

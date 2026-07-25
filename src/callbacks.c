@@ -31,7 +31,7 @@ void on_r_slider_change(void *data, Evas_Object *obj, void *event_info)
     int r = (int)elm_slider_value_get(obj);
     int g = (int)elm_slider_value_get(ad->g_slider);
     int b = (int)elm_slider_value_get(ad->b_slider);
-    update_color_widgets(ad, r, g, b);
+    update_color_widgets(ad, r, g, b, NULL);
 }
 
 void on_g_slider_change(void *data, Evas_Object *obj, void *event_info)
@@ -41,7 +41,7 @@ void on_g_slider_change(void *data, Evas_Object *obj, void *event_info)
     int r = (int)elm_slider_value_get(ad->r_slider);
     int g = (int)elm_slider_value_get(obj);
     int b = (int)elm_slider_value_get(ad->b_slider);
-    update_color_widgets(ad, r, g, b);
+    update_color_widgets(ad, r, g, b, NULL);
 }
 
 void on_b_slider_change(void *data, Evas_Object *obj, void *event_info)
@@ -51,33 +51,45 @@ void on_b_slider_change(void *data, Evas_Object *obj, void *event_info)
     int r = (int)elm_slider_value_get(ad->r_slider);
     int g = (int)elm_slider_value_get(ad->g_slider);
     int b = (int)elm_slider_value_get(obj);
-    update_color_widgets(ad, r, g, b);
+    update_color_widgets(ad, r, g, b, NULL);
 }
 
 /*  update rgb/hex values on rgb_sliders change and the sliders themselves */
 void
-update_color_widgets(App_Data *ad, int r, int g, int b)
+update_color_widgets(App_Data *ad, int r, int g, int b, Evas_Object *source)
 {
-
    if (ad->updating) return;
    ad->updating = EINA_TRUE;
 
-   // char buf[8]; // #rrggbb\0
    char buf[16]; // #rrggbbaa
-   /* update rgb entries */
-   snprintf(buf, sizeof(buf), "%d", r);
-   elm_object_text_set(ad->r_entry, buf);
-   snprintf(buf, sizeof(buf), "%d", g);
-   elm_object_text_set(ad->g_entry, buf);
-   snprintf(buf, sizeof(buf), "%d", b);
-   elm_object_text_set(ad->b_entry, buf);
-   /* update cc entry */
+
+   /* update rgb entries, skipping whichever one the user is actively editing */
+   if (ad->r_entry != source)
+     {
+        snprintf(buf, sizeof(buf), "%d", r);
+        elm_object_text_set(ad->r_entry, buf);
+     }
+   if (ad->g_entry != source)
+     {
+        snprintf(buf, sizeof(buf), "%d", g);
+        elm_object_text_set(ad->g_entry, buf);
+     }
+   if (ad->b_entry != source)
+     {
+        snprintf(buf, sizeof(buf), "%d", b);
+        elm_object_text_set(ad->b_entry, buf);
+     }
+
+   /* update cc entry (never a typing source) */
    snprintf(buf, sizeof(buf), "%d %d %d", r, g, b);
    elm_object_text_set(ad->cc_entry, buf);
 
-   /* update hex entry */
-   snprintf(buf, sizeof(buf), "#%02x%02x%02x", r, g, b);
-   elm_object_text_set(ad->hex_entry, buf);
+   /* update hex entry, unless the user is actively editing it */
+   if (ad->hex_entry != source)
+     {
+        snprintf(buf, sizeof(buf), "#%02x%02x%02x", r, g, b);
+        elm_object_text_set(ad->hex_entry, buf);
+     }
 
    /* update the sliders automatically */
    elm_slider_value_set(ad->r_slider, (double)r);
@@ -95,12 +107,12 @@ void on_r_entry_change(void *data, Evas_Object *obj, void *event_info)
     App_Data *ad = data;
     if (ad->updating) return;
     const char *s = elm_object_text_get(obj);
-    int r = s ? atoi(s) : 0;
+    int r = (s && s[0]) ? atoi(s) : 0;
     if (r < 0) r = 0;
     if (r > 255) r = 255;
     int g = (int)elm_slider_value_get(ad->g_slider);
     int b = (int)elm_slider_value_get(ad->b_slider);
-    update_color_widgets(ad, r, g, b);
+    update_color_widgets(ad, r, g, b, obj);
 }
 
 void on_g_entry_change(void *data, Evas_Object *obj, void *event_info)
@@ -108,12 +120,12 @@ void on_g_entry_change(void *data, Evas_Object *obj, void *event_info)
     App_Data *ad = data;
     if (ad->updating) return;
     const char *s = elm_object_text_get(obj);
-    int g = s ? atoi(s) : 0;
+    int g = (s && s[0]) ? atoi(s) : 0;
     if (g < 0) g = 0;
     if (g > 255) g = 255;
     int r = (int)elm_slider_value_get(ad->r_slider);
     int b = (int)elm_slider_value_get(ad->b_slider);
-    update_color_widgets(ad, r, g, b);
+    update_color_widgets(ad, r, g, b, obj);
 }
 
 void on_b_entry_change(void *data, Evas_Object *obj, void *event_info)
@@ -121,12 +133,12 @@ void on_b_entry_change(void *data, Evas_Object *obj, void *event_info)
     App_Data *ad = data;
     if (ad->updating) return;
     const char *s = elm_object_text_get(obj);
-    int b = s ? atoi(s) : 0;
+    int b = (s && s[0]) ? atoi(s) : 0;
     if (b < 0) b = 0;
     if (b > 255) b = 255;
     int r = (int)elm_slider_value_get(ad->r_slider);
     int g = (int)elm_slider_value_get(ad->g_slider);
-    update_color_widgets(ad, r, g, b);
+    update_color_widgets(ad, r, g, b, obj);
 }
 
 // hex
@@ -137,8 +149,10 @@ void on_hex_entry_change(void *data, Evas_Object *obj, void *event_info)
     const char *s = elm_object_text_get(obj);
     if (!s) return;
     const char *p = (s[0] == '#') ? s + 1 : s;
+    size_t len = strlen(p);
+
     char expanded[7];
-    if (strlen(p) == 3)
+    if (len == 3)
       {
          expanded[0] = p[0]; expanded[1] = p[0];
          expanded[2] = p[1]; expanded[3] = p[1];
@@ -146,10 +160,16 @@ void on_hex_entry_change(void *data, Evas_Object *obj, void *event_info)
          expanded[6] = '\0';
          p = expanded;
       }
-    else if (strlen(p) < 6) return;
+    else if (len < 6)
+      {
+         /* not enough digits yet to form a color -- wait for more input,
+            do not touch the entry or any other widget */
+         return;
+      }
+
     int r, g, b;
     if (sscanf(p, "%02x%02x%02x", &r, &g, &b) != 3) return;
-    update_color_widgets(ad, r, g, b);
+    update_color_widgets(ad, r, g, b, obj);
 }
 
 // spinner
@@ -242,7 +262,8 @@ void on_preview_move(void *data, Evas *e, void *event_info)
    update_color_widgets(ad,
                         (colour >> 16) & 0xff,
                         (colour >>  8) & 0xff,
-                        (colour      ) & 0xff);
+                        (colour      ) & 0xff,
+                        NULL);
 }
 
 /* unused */
