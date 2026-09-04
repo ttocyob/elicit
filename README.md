@@ -40,6 +40,7 @@ sudo ninja -C build install
 
 ## Missing Features
 
+- Support the HSV color model
 - Save swatch color to a palette directory
 
 ---
